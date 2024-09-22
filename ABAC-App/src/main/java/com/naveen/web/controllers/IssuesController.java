@@ -49,7 +49,7 @@ private static final Logger logger = LoggerFactory.getLogger(IssuesController.cl
 			return null;
 		}
 		policy.checkPermission(project, "ISSUES_LIST");
-		List<Issue> result = issueService.getIssues(new Project(projectId));
+		List<Issue> result = issueService.getIssues(projectId);
 		logger.info("[listIssues({})] done, result: {} issues.", projectId, result == null? null : result.size());
 		return result;
 	}
@@ -112,7 +112,7 @@ private static final Logger logger = LoggerFactory.getLogger(IssuesController.cl
 		
 		policy.checkPermission(currentIssue, "ISSUES_DELTE");
 		
-		issueService.deleteIssue(new Issue(id));
+		issueService.deleteIssue(id);
 		logger.info("[deleteIssue({})] done.", id);
 	}
 	

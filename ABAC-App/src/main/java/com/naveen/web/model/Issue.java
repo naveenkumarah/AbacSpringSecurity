@@ -1,17 +1,37 @@
 package com.naveen.web.model;
 
+import jakarta.persistence.*;
+import lombok.*;
+
+@Entity
+@Table(name = "issue")
+@Data
+@Setter
+@Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Issue {
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 
-	private Project project;
-	private IssueType type;
 	private String name;
+
 	private String description;
+
+	@ManyToOne
+	private Project project;
+
+	@Enumerated(EnumType.STRING)
+	private IssueType type;
 	
 	private String createdBy;
 	private String assignedTo;
+
+	@Enumerated(EnumType.STRING)
 	private IssueStatus status;
-	
+	/*
 	public Issue() {
 		super();
 	}
@@ -87,5 +107,5 @@ public class Issue {
 	public String toString() {
 		return "{id:" + id + ", project:" + project + ", type:" + type + ", name:" + name + ", description:"
 				+ description + ", createdBy:" + createdBy + ", assignedTo:" + assignedTo + ", status:" + status + "}";
-	}	
+	}	*/
 }
