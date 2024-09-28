@@ -1,15 +1,15 @@
 package com.naveen.abac.security.spring;
 
 import java.io.Serializable;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import com.naveen.abac.security.policy.PolicyEnforcement;
@@ -21,11 +21,16 @@ public class AbacPermissionEvaluator implements PermissionEvaluator {
 	@Autowired
 	PolicyEnforcement policy;
 
+
 	@Override
 	public boolean hasPermission(Authentication authentication , Object targetDomainObject, Object permission) {
-		Object user = authentication.getPrincipal();
+		//Object user = authentication.getPrincipal();
+		//Object roles=authentication.getAuthorities();
 		Map<String, Object> environment = new HashMap<>();
-		
+		UserContext userContext=new UserContext();
+		userContext.setPrincipal(authentication.getPrincipal().toString());
+
+		userContext.setRoles(authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()));
 		/*
 		Object authDetails = authentication.getDetails();
 		if(authDetails != null) {
@@ -36,8 +41,8 @@ public class AbacPermissionEvaluator implements PermissionEvaluator {
 		*/
 		environment.put("time", new Date());
 		
-		logger.debug("hasPersmission({}, {}, {})", user, targetDomainObject, permission);
-		return policy.check(user, targetDomainObject, permission, environment);
+		logger.debug("hasPersmission({}, {}, {})", userContext, targetDomainObject, permission);
+		return policy.check(userContext, targetDomainObject, permission, environment);
 	}
 
 	@Override
